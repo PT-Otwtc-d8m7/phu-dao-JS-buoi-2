@@ -37,14 +37,66 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log(HighestPricedProduct)
             });
 
+            let totalPrice = 0;
+            let count = 0;
+
+            items.forEach(item => {
+                if(item.title === "Test bundle") {
+                    item.variants.forEach(variant => {
+                        const price = variant.price
+                        totalPrice = totalPrice + price;
+                        count++;
+                    });
+                }
+            });
+
+            console.log(`Total Price: ${totalPrice}`);
+            console.log(`Count: ${count}`);
+
             if (HighestPricedProduct) {
                 const productInfoDiv = document.getElementById('product-info');
                 productInfoDiv.innerHTML = `
-                    <h2>${HighestPricedProduct.name}</h2>
+                    <h2>${HighestPricedProduct.name}</h2>   
                     <p>Price: ${HighestPricedProduct.price}</p>
                     <h3>Options:</h3>
                 `;
             }
+            
+            if (totalPrice !== 0 && count !== 0) {
+                const productInfoDiv = document.getElementById('testbundle-info');
+                productInfoDiv.innerHTML = `
+                    <h2>Test bundle</h2>   
+                    <p>Total Price: ${totalPrice}</p>
+                    <h3>Count: ${count}</h3>
+                `;
+            }
+
+
+            let resultsHTML = '';
+
+            items.forEach(item => {
+                item.variants.forEach(variant => {
+                    if (variant.available === 0) {
+                        resultsHTML += `<p>/=/</p>`;
+                        resultsHTML += `<p>${item.title}</p>`;
+                        resultsHTML += `<p>Price: ${variant.price}</p>`;
+                    }
+                });
+            });
+
+            const resultsDiv = document.getElementById('soldout-info');
+            resultsDiv.innerHTML = resultsHTML;
+            
+
+            items.forEach(item => {
+                item.variants.forEach(variant => {
+                    const available = variant.available;
+                    if (available === 0) {
+                        console.log(item.title)
+                        console.log(variant)
+                    }
+                });
+            });
             
         } catch (error) {
             console.error('Error fetching data:', error);
